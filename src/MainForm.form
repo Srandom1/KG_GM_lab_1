@@ -49,7 +49,7 @@
       <component id="a406d" class="javax.swing.JTextField" binding="accelerationEdit">
         <constraints/>
         <properties>
-          <text value="0"/>
+          <text value="5"/>
         </properties>
       </component>
       <grid id="40c70" binding="contentPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">

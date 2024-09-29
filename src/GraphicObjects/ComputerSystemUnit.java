@@ -81,7 +81,7 @@ public class ComputerSystemUnit implements Drawable {
         Можно устонавливать только положительный чилса.*/
         if (value > 0) {
             for (Cooler cooler: coolers){
-                cooler.setRadius(coolerRadius);
+                cooler.setRadius(value);
             }
             coolerRadius = value;
         } else {

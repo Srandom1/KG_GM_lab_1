@@ -17,11 +17,11 @@ public class MainForm extends JFrame {
         window = new Window();
         contentPanel = window;
 
-        //initWindow();
-
-        //this.add(contentPanel);
+        this.setBackground(Color.CYAN);
+        panelMain.setBackground(Color.RED);
         this.setContentPane(panelMain);
         panelMain.add(contentPanel);
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
 

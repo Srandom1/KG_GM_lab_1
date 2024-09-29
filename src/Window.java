@@ -8,8 +8,8 @@ import GraphicObjects.ComputerSystemUnit;
 
 public class Window extends JPanel implements ActionListener {
 
-    final static int FORM_WIDTH = 700;
-    final static int FORM_HEIGHT = 700;
+    final static int FORM_WIDTH = 1000;
+    final static int FORM_HEIGHT = 1000;
 
     private double bladeOffset = 0;
 
@@ -58,10 +58,13 @@ public class Window extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         double secondsPerTick = 1 / fps;
 
-        if (currentCoolerSpeed < maxCoolersSpeed){
+        double currentSpeedABS = Math.abs(currentCoolerSpeed);
+        double maxSpeedABS = Math.abs(maxCoolersSpeed);
+
+        if (currentSpeedABS < maxSpeedABS){
             currentCoolerSpeed += secondsPerTick * acceleration;
         }
-        if (currentCoolerSpeed > maxCoolersSpeed){
+        if (currentSpeedABS > maxSpeedABS){
             currentCoolerSpeed = maxCoolersSpeed;
         }
         double spinAngel = currentCoolerSpeed * 360 / 60 / fps;
@@ -73,20 +76,19 @@ public class Window extends JPanel implements ActionListener {
     @Override
     public void paint(Graphics g) {
 
-        Point anchor = new Point(240, 180);
+        Point anchor = new Point(380, 80);
         // преобразование графического объекта
         Graphics2D graph2d = (Graphics2D) g;
         graph2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graph2d.clearRect(0, 0, FORM_HEIGHT, FORM_WIDTH);
-        setBackground(new Color(195, 195, 235));
+
         // построение геометрических примитивов
 
-        BasicStroke stroke = new BasicStroke(7.0f);
-        graph2d.setPaint(new Color(10, 25, 36));
-        //graph2d.fillArc(-100, -100, 450, 450, -80, 90);
+        graph2d.setPaint(new Color(45, 45, 46));
+
         this.unit = new ComputerSystemUnit(graph2d, anchor.x, anchor.y + 60, bladeOffset);
-        unit.setCoolerRadius(50);
-        unit.setUnitHeight(420);
+        unit.setCoolerRadius(60);
+        unit.setUnitHeight(480);
         unit.setUnitWidth(220);
         unit.draw();
 

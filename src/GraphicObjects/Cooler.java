@@ -90,10 +90,10 @@ public class Cooler implements Drawable{
                 (double) radius * 2 / cooler_coefficient,
                 (double) radius * 2 / cooler_coefficient);
 
-        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 0 + bladeOffsetAngle, 40 + bladeOffsetAngle));
-        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 90 + bladeOffsetAngle, 40 + bladeOffsetAngle));
-        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 180 + bladeOffsetAngle, 40 + bladeOffsetAngle));
-        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 270 + bladeOffsetAngle, 40 + bladeOffsetAngle));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 0 + bladeOffsetAngle, 40));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 90 + bladeOffsetAngle, 40));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 180 + bladeOffsetAngle, 40));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 270 + bladeOffsetAngle, 40));
 
         graphics.setPaint(Color.GRAY);
 

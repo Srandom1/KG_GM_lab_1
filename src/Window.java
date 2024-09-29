@@ -1,31 +1,44 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import GraphicObjects.ComputerSystemUnit;
 
-public class Window extends JFrame {
+public class Window extends JPanel implements ActionListener {
 
     final static int FORM_WIDTH = 700;
     final static int FORM_HEIGHT = 700;
 
+    private double bladeOffset = 0;
+
     private ComputerSystemUnit unit;
+
+    private Timer timer;
+
+    private double fps = 240;
+
+    //Колличество оборотов в минуту
+    private double coolersSpeed = 1000;
 
     Window(){
         setSize(FORM_WIDTH, FORM_HEIGHT);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setVisible(true);}
 
-    public void animate(){
-        for (int i = 0; i < 20; i++){
-            this.unit.move(10);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
+        setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
+
+        timer = new Timer((int)(1000 / fps), this);
+        timer.start();
+
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        double spinAngel = coolersSpeed * 360 / 60 / fps;
+        this.bladeOffset += spinAngel;
+
+        repaint();
     }
 
     public void paint(Graphics g) {
@@ -33,6 +46,7 @@ public class Window extends JFrame {
         Point anchor = new Point(240, 180);
         // преобразование графического объекта
         Graphics2D graph2d = (Graphics2D) g;
+        graph2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graph2d.clearRect(0, 0, FORM_HEIGHT, FORM_WIDTH);
         setBackground(new Color(195, 195, 235));
         // построение геометрических примитивов
@@ -40,7 +54,7 @@ public class Window extends JFrame {
         BasicStroke stroke = new BasicStroke(7.0f);
         graph2d.setPaint(new Color(10, 25, 36));
         //graph2d.fillArc(-100, -100, 450, 450, -80, 90);
-        this.unit = new ComputerSystemUnit(graph2d, anchor.x, anchor.y + 60);
+        this.unit = new ComputerSystemUnit(graph2d, anchor.x, anchor.y + 60, bladeOffset);
         unit.setCoolerRadius(50);
         unit.setUnitHeight(420);
         unit.setUnitWidth(220);
@@ -50,8 +64,20 @@ public class Window extends JFrame {
 
         graph2d.setFont(new Font("Arial", Font.BOLD, 24));
         graph2d.drawString("This is computer", anchor.x, anchor.y);
+    }
 
-        animate();
+    public static void main(String[] args) {
+
+        JFrame frame = new JFrame("AnimationExample");
+
+        Window window = new Window();
+
+        frame.add(window);
+
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 
 }

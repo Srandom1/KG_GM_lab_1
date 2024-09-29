@@ -17,6 +17,7 @@ public class Cooler implements Drawable{
     private int xLocation;
     private int yLocation;
 
+    private LinkedList<FanBlade> fanBlades = new LinkedList<>();
     public Cooler(Graphics2D graphics, int x_location, int y_location){
         this.graphics = graphics;
         this.xLocation = x_location;
@@ -65,8 +66,10 @@ public class Cooler implements Drawable{
         }
     }
 
-    private void calculateFiguresParametrs(){
-
+    public void move(double angle){
+        for(FanBlade fanBlade: fanBlades){
+            fanBlade.move(angle);
+        }
     }
 
     @Override
@@ -75,7 +78,16 @@ public class Cooler implements Drawable{
         this.startPaint = graphics.getPaint();
         BasicStroke stroke = new BasicStroke(strokeGage);
 
-        //LinkedList<ShapeVisualisationSettings> figures = new LinkedList<>();
+        Ellipse2D.Double externalCircle = new Ellipse2D.Double(xLocation, yLocation, radius * 2, radius *2);
+        Ellipse2D.Double internalCircle = new Ellipse2D.Double(xLocation +  radius * Math.PI / cooler_coefficient,
+                yLocation +  radius * Math.PI / cooler_coefficient,
+                (double) radius * 2 / cooler_coefficient,
+                (double) radius * 2 / cooler_coefficient);
+
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 0, 40));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 90, 40));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 180, 40));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 270, 40));
 
         graphics.setPaint(Color.GRAY);
 
@@ -83,17 +95,17 @@ public class Cooler implements Drawable{
 
         graphics.setStroke(stroke);
         graphics.setPaint(Color.WHITE);
-        graphics.fill(new Ellipse2D.Double(xLocation, yLocation, radius * 2, radius *2));
+        graphics.fill(externalCircle);
 
         graphics.setPaint(Color.black);
-        graphics.fill(new Ellipse2D.Double(xLocation +  radius * Math.PI / cooler_coefficient,
-                yLocation +  radius * Math.PI / cooler_coefficient,
-                (double) radius * 2 / cooler_coefficient,
-                (double) radius * 2 / cooler_coefficient));
+        graphics.fill(internalCircle);
+
+        for(FanBlade fanBlade: fanBlades){
+            fanBlade.draw();
+        }
 
         graphics.setPaint(startPaint);
         graphics.setStroke(startStroke);
-
 
     }
 }

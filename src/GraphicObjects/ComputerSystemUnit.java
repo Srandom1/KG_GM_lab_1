@@ -119,6 +119,12 @@ public class ComputerSystemUnit implements Drawable {
         }
     }
 
+    public void move(double angle){
+        for (Cooler cooler: this.coolers){
+            cooler.move(angle);
+        }
+    }
+
     @Override
     public void draw() {
 

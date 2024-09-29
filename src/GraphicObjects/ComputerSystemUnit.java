@@ -1,22 +1,21 @@
 package GraphicObjects;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
+import java.awt.geom.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ComputerSystemUnit implements Drawable {
     public Graphics2D graphics;
     public float strokeGage = 5.0f;
-    private int coolerRadius = 20;
+    private int coolerRadius = 55;
+    private int panelProportions = 6;
     private int unitWidth = 60;
     private int unitHeight = 100;
-    private Stroke prevStroke;
-    private Paint prevPaint;
+    private final Stroke startStroke;
+    private final Paint startPaint;
     //Каждый элемент - координаты верхнего левого угла для куллера
-    private List<Integer[]> coolers = new LinkedList<>();
+    private List<Cooler> coolers = new LinkedList<>();
 
 
     private int xLocation;
@@ -24,12 +23,15 @@ public class ComputerSystemUnit implements Drawable {
 
     public ComputerSystemUnit(Graphics2D graphics, int x_location, int y_location) {
         this.graphics = graphics;
-        prevStroke = graphics.getStroke();
-        prevPaint = graphics.getPaint();
+        startStroke = graphics.getStroke();
+        startPaint = graphics.getPaint();
         this.xLocation = x_location;
         this.yLocation = y_location;
-        this.coolers.add(new Integer[]{0,0});
-        this.coolers.add(new Integer[]{0,0});
+        this.coolers.add(new Cooler(graphics, x_location, y_location));
+        this.coolers.add(new Cooler(graphics, x_location, y_location));
+        for (Cooler cooler: coolers){
+            cooler.setRadius(coolerRadius);
+        }
     }
 
 
@@ -74,7 +76,10 @@ public class ComputerSystemUnit implements Drawable {
         /*Устанавливает местоположение на холсте относительно левого верхнего края.
         Можно устонавливать только положительный чилса.*/
         if (value > 0) {
-            this.coolerRadius = value;
+            for (Cooler cooler: coolers){
+                cooler.setRadius(coolerRadius);
+            }
+            coolerRadius = value;
         } else {
             throw new RuntimeException("could be positive");
         }
@@ -101,12 +106,16 @@ public class ComputerSystemUnit implements Drawable {
     }
 
     private void recalculateCoolersLocation(){
-        int xCoolerLocation = this.xLocation + this.unitWidth / 2 - coolerRadius;
-        int yCoolerLocation = this.yLocation + this.unitHeight / (coolers.size() + 1) - coolerRadius;
-        for (Integer[] coordinates: this.coolers){
-            coordinates[0] = xCoolerLocation;
-            coordinates[1] = yCoolerLocation;
-            yCoolerLocation += this.unitHeight / (coolers.size() + 1);
+        double yTehPanelSize = (double) unitHeight / panelProportions;
+        double yCoolerPanelSize = (double) unitHeight - yTehPanelSize;
+
+        int yCoolerLocation = (int) (this.yLocation + yTehPanelSize +yCoolerPanelSize /  (coolers.size() + 1));
+        for (Cooler cooler: this.coolers){
+            yCoolerLocation += - cooler.getRadius();
+            int xCoolerLocation = (int) (this.xLocation  + this.unitWidth / 2 - cooler.getRadius());
+            cooler.setXLocation(xCoolerLocation);
+            cooler.setYLocation(yCoolerLocation);
+            yCoolerLocation += (int) (yCoolerPanelSize / (coolers.size() + 1) + cooler.getRadius());
         }
     }
 
@@ -117,46 +126,40 @@ public class ComputerSystemUnit implements Drawable {
         graphics.setPaint(Color.black);
         graphics.setStroke(stroke);
 
-
-
         recalculateCoolersLocation();
         LinkedList<ShapeVisualisationSettings> figures = new LinkedList<>();
+
         Rectangle2D.Double rect = new Rectangle2D.Double(xLocation,yLocation, unitWidth,unitHeight);
-        int proportions = 6;
         double off_button_location_position = 0.75;
         double off_button_size_proportions = 0.6;
 
         figures.add(new ShapeVisualisationSettings(rect, stroke, Color.black));
+
         graphics.setPaint(Color.black);
-        graphics.fillRect(xLocation, yLocation + (unitHeight/ proportions), unitWidth, unitHeight - (unitHeight / proportions));
+        graphics.fillRect(xLocation, yLocation + (unitHeight/ panelProportions), unitWidth, unitHeight - (unitHeight / panelProportions));
         graphics.setPaint(Color.darkGray);
-        graphics.fillRect(xLocation, yLocation, unitWidth, unitHeight / proportions);
-        double yTehPanelSize = (double) unitHeight / proportions;
-        double xTehPanelSize = (double) unitWidth / proportions;
+        graphics.fillRect(xLocation, yLocation, unitWidth, unitHeight / panelProportions);
+        double yTehPanelSize = (double) unitHeight / panelProportions;
+        // double xTehPanelSize = (double) unitWidth / proportions;
         graphics.setPaint(Color.red);
         graphics.fillOval( (int) (xLocation + unitWidth * off_button_location_position),
                 (int) (yLocation + yTehPanelSize * (1 - off_button_size_proportions) / 2 ),
                 (int) (off_button_size_proportions * yTehPanelSize),
                 (int) (off_button_size_proportions * yTehPanelSize));
 
-        for (Integer[] coordinates: this.coolers) {
-            graphics.setPaint(Color.WHITE);
-            graphics.fillOval(coordinates[0], coordinates[1], coolerRadius * 2, coolerRadius * 2);
-            figures.add(new ShapeVisualisationSettings(
-                    new Ellipse2D.Double(coordinates[0], coordinates[1], coolerRadius * 2, coolerRadius * 2),
-                    stroke, Color.blue));
-          figures.add(new ShapeVisualisationSettings(new Ellipse2D.Double(
-                  coordinates[0] + Math.pow( (double) (coolerRadius * 3.14) / 4, 1) ,
-                   coordinates[1] + Math.pow( (double) (coolerRadius * 3.14) / 4, 1),
-                   (double) (coolerRadius * 2) / 4, (double) (coolerRadius * 2) / 4),
-                   stroke, Color.black));
+        LinkedList<Drawable> drawablesObjects = new LinkedList<>(this.coolers);
+        
+        for (Drawable geomObject: drawablesObjects) {
+           geomObject.draw();
         }
+
         for (ShapeVisualisationSettings shapeSettings: figures){
             graphics.setStroke(shapeSettings.stroke);
             graphics.setPaint(shapeSettings.paint);
             graphics.draw(shapeSettings.shape);
         }
-        graphics.setStroke(prevStroke);
-        graphics.setPaint(prevPaint);
+
+        graphics.setStroke(startStroke);
+        graphics.setPaint(startPaint);
     }
 }

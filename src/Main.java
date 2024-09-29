@@ -32,7 +32,7 @@ public class Main extends JFrame {
 
         BasicStroke stroke = new BasicStroke(7.0f);
         graph2d.setPaint(Color.blue);
-
+        //graph2d.fillArc(-100, -100, 450, 450, -80, 90);
         ComputerSystemUnit unit = new ComputerSystemUnit(graph2d, anchor.x, anchor.y + 60);
         unit.setCoolerRadius(50);
         unit.setUnitHeight(420);

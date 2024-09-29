@@ -17,10 +17,14 @@ public class Window extends JPanel implements ActionListener {
 
     private Timer timer;
 
-    private double fps = 240;
+    private double fps = 144;
 
     //Колличество оборотов в минуту
-    private double coolersSpeed = 1000;
+    public double maxCoolersSpeed = 1600;
+
+    public double currentCoolerSpeed = 0;
+    // изменение кол-во оборотов в секунду
+    public double acceleration = 10;
 
     Window(){
         setSize(FORM_WIDTH, FORM_HEIGHT);
@@ -29,18 +33,44 @@ public class Window extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
 
         timer = new Timer((int)(1000 / fps), this);
-        timer.start();
 
         setVisible(true);
     }
 
+    public void changeFps(int value){
+        if (value < 0){
+            throw new IllegalArgumentException("Fps must be positive int");
+        }
+        this.fps = value;
+    }
+
+    public void activateButtonPressed(){
+        timer.setDelay((int) (1000 / fps));
+        if (timer.isRunning()){
+            currentCoolerSpeed = 0;
+            timer.stop();
+        }
+        else {
+            timer.start();
+        }
+    }
+
     public void actionPerformed(ActionEvent e) {
-        double spinAngel = coolersSpeed * 360 / 60 / fps;
+        double secondsPerTick = 1 / fps;
+
+        if (currentCoolerSpeed < maxCoolersSpeed){
+            currentCoolerSpeed += secondsPerTick * acceleration;
+        }
+        if (currentCoolerSpeed > maxCoolersSpeed){
+            currentCoolerSpeed = maxCoolersSpeed;
+        }
+        double spinAngel = currentCoolerSpeed * 360 / 60 / fps;
         this.bladeOffset += spinAngel;
 
         repaint();
     }
 
+    @Override
     public void paint(Graphics g) {
 
         Point anchor = new Point(240, 180);

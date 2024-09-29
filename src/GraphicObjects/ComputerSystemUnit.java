@@ -21,7 +21,7 @@ public class ComputerSystemUnit implements Drawable {
     private int xLocation;
     private int yLocation;
 
-    public ComputerSystemUnit(Graphics2D graphics, int x_location, int y_location) {
+    public ComputerSystemUnit(Graphics2D graphics, int x_location, int y_location, double bladeAngle) {
         this.graphics = graphics;
         startStroke = graphics.getStroke();
         startPaint = graphics.getPaint();
@@ -29,6 +29,10 @@ public class ComputerSystemUnit implements Drawable {
         this.yLocation = y_location;
         this.coolers.add(new Cooler(graphics, x_location, y_location));
         this.coolers.add(new Cooler(graphics, x_location, y_location));
+        for (Cooler cooler: coolers){
+            cooler.setBladeOffsetAngle(bladeAngle);
+        }
+
         for (Cooler cooler: coolers){
             cooler.setRadius(coolerRadius);
         }

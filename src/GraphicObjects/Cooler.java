@@ -17,6 +17,8 @@ public class Cooler implements Drawable{
     private int xLocation;
     private int yLocation;
 
+    private double bladeOffsetAngle = 0;
+
     private LinkedList<FanBlade> fanBlades = new LinkedList<>();
     public Cooler(Graphics2D graphics, int x_location, int y_location){
         this.graphics = graphics;
@@ -56,6 +58,10 @@ public class Cooler implements Drawable{
         }
     }
 
+    public void setBladeOffsetAngle(double value){
+        this.bladeOffsetAngle = value;
+    }
+
     public void setRadius(int value) {
         /*Устанавливает местоположение на холсте относительно левого верхнего края.
         Можно устонавливать только положительный чилса.*/
@@ -84,10 +90,10 @@ public class Cooler implements Drawable{
                 (double) radius * 2 / cooler_coefficient,
                 (double) radius * 2 / cooler_coefficient);
 
-        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 0, 40));
-        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 90, 40));
-        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 180, 40));
-        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 270, 40));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 0 + bladeOffsetAngle, 40 + bladeOffsetAngle));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 90 + bladeOffsetAngle, 40 + bladeOffsetAngle));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 180 + bladeOffsetAngle, 40 + bladeOffsetAngle));
+        fanBlades.add(new FanBlade(this.graphics, internalCircle, externalCircle, 270 + bladeOffsetAngle, 40 + bladeOffsetAngle));
 
         graphics.setPaint(Color.GRAY);
 
